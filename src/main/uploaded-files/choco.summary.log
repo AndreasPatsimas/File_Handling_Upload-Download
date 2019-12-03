@@ -1,0 +1,463 @@
+2019-07-29 12:00:20,620 6700 [INFO ] - ============================================================
+2019-07-29 12:00:21,058 6700 [INFO ] - 0.10.15
+2019-07-29 12:02:37,089 11620 [INFO ] - ============================================================
+2019-07-29 12:02:37,464 11620 [INFO ] - Chocolatey v0.10.15
+2019-07-29 12:02:37,464 11620 [INFO ] - Please run 'choco -?' or 'choco <command> -?' for help menu.
+2019-07-29 12:02:51,605 824 [INFO ] - ============================================================
+2019-07-29 12:02:51,996 824 [INFO ] - This is a listing of all of the different things you can pass to choco.
+
+2019-07-29 12:02:52,009 824 [INFO ] - Commands
+2019-07-29 12:02:52,009 824 [INFO ] - 
+ * list - lists remote or local packages
+ * find - searches remote or local packages (alias for search)
+ * search - searches remote or local packages (alias for list)
+ * info - retrieves package information. Shorthand for choco search pkgname --exact --verbose
+ * install - installs packages from various sources
+ * pin - suppress upgrades for a package
+ * outdated - retrieves packages that are outdated. Similar to upgrade all --noop
+ * upgrade - upgrades packages from various sources
+ * uninstall - uninstalls a package
+ * pack - packages up a nuspec to a compiled nupkg
+ * push - pushes a compiled nupkg
+ * new - generates files necessary for a chocolatey package from a template
+ * sources - view and configure default sources (alias for source)
+ * source - view and configure default sources
+ * config - Retrieve and configure config file settings
+ * feature - view and configure choco features
+ * features - view and configure choco features (alias for feature)
+ * setapikey - retrieves, saves or deletes an apikey for a particular source (alias for apikey)
+ * apikey - retrieves, saves or deletes an apikey for a particular source
+ * unpackself - have chocolatey set itself up
+ * version - [DEPRECATED] will be removed in v1 - use `choco outdated` or `cup <pkg|all> -whatif` instead
+ * update - [DEPRECATED] RESERVED for future use (you are looking for upgrade, these are not the droids you are looking for)
+
+
+Please run chocolatey with `choco command -help` for specific help on
+ each command.
+
+2019-07-29 12:02:52,009 824 [INFO ] - How To Pass Options / Switches
+2019-07-29 12:02:52,009 824 [INFO ] - 
+You can pass options and switches in the following ways:
+
+ * Unless stated otherwise, an option/switch should only be passed one
+   time. Otherwise you may find weird/non-supported behavior.
+ * `-`, `/`, or `--` (one character switches should not use `--`)
+ * **Option Bundling / Bundled Options**: One character switches can be
+   bundled. e.g. `-d` (debug), `-f` (force), `-v` (verbose), and `-y`
+   (confirm yes) can be bundled as `-dfvy`.
+ * NOTE: If `debug` or `verbose` are bundled with local options
+   (not the global ones above), some logging may not show up until after
+   the local options are parsed.
+ * **Use Equals**: You can also include or not include an equals sign
+   `=` between options and values.
+ * **Quote Values**: When you need to quote an entire argument, such as
+   when using spaces, please use a combination of double quotes and
+   apostrophes (`"'value'"`). In cmd.exe you can just use double quotes
+   (`"value"`) but in powershell.exe you should use backticks
+   (`` `"value`" ``) or apostrophes (`'value'`). Using the combination
+   allows for both shells to work without issue, except for when the next
+   section applies.
+ * **Pass quotes in arguments**: When you need to pass quoted values to
+   to something like a native installer, you are in for a world of fun. In
+   cmd.exe you must pass it like this: `-ia "/yo=""Spaces spaces"""`. In
+   PowerShell.exe, you must pass it like this: `-ia '/yo=""Spaces spaces""'`.
+   No other combination will work. In PowerShell.exe if you are on version
+   v3+, you can try `--%` before `-ia` to just pass the args through as is,
+   which means it should not require any special workarounds.
+ * **Periods in PowerShell**: If you need to pass a period as part of a
+   value or a path, PowerShell doesn't always handle it well. Please
+   quote those values using "Quote Values" section above.
+ * Options and switches apply to all items passed, so if you are
+   installing multiple packages, and you use `--version=1.0.0`, choco
+   is going to look for and try to install version 1.0.0 of every
+   package passed. So please split out multiple package calls when
+   wanting to pass specific options.
+
+2019-07-29 12:02:52,009 824 [INFO ] - Scripting / Integration - Best Practices / Style Guide
+2019-07-29 12:02:52,009 824 [INFO ] - 
+When writing scripts, such as PowerShell scripts passing options and
+switches, there are some best practices to follow to ensure that you
+don't run into issues later. This also applies to integrations that
+are calling Chocolatey and parsing output. Chocolatey **uses** 
+PowerShell, but it is an exe, so it cannot return PowerShell objects.
+
+Following these practices ensures both readability of your scripts AND 
+compatibility across different versions and editions of Chocolatey. 
+Following this guide will ensure your experience is not frustrating 
+based on choco not receiving things you think you are passing to it.
+
+ * For consistency, always use `choco`, not `choco.exe`. Never use 
+   shortcut commands like `cinst` or `cup`.
+ * Always have the command as the first argument to `choco. e.g.
+   `choco install`, where `install` is the command.
+ * If there is a subcommand, ensure that is the second argument. e.g.
+   `choco source list`, where `source` is the command and `list` is the
+   subcommand.
+ * Typically the subject comes next. If installing packages, the 
+   subject would be the package names, e.g. `choco install pkg1 pkg2`.
+ * Never use 'nupkg' or point directly to a nupkg file UNLESS using
+   'choco push'. Use the source folder instead, e.g. `choco install
+   <package id> --source="'c:\folder\with\package'"` instead of 
+   `choco install DoNotDoThis.1.0.nupkg` or `choco install DoNotDoThis 
+    --source="'c:\folder\with\package\DoNotDoThis.1.0.nupkg'"`.
+ * Switches and parameters are called simply options. Options come 
+   after the subject. e.g. `choco install pkg1 --debug --verbose`.
+ * Never use the force option (`--force`/`-f`) in scripts (or really
+   otherwise as a default mode of use). Force is an override on 
+   Chocolatey behavior. If you are wondering why Chocolatey isn't doing
+   something like the documentation says it should, it's likely because
+   you are using force. Stop.
+ * Always use full option name. If the short option is `-n`, and the
+   full option is `--name`, use `--name`. The only acceptable short
+   option for use in scripts is `-y`. Find option names in help docs
+   online or through `choco -?` /`choco [Command Name] -?`.
+ * For scripts that are running automated, always use `-y`. Do note 
+   that even with `-y` passed, some things / state issues detected will
+   temporarily stop for input - the key here is temporarily. They will 
+   continue without requiring any action after the temporary timeout
+   (typically 30 seconds).
+ * Full option names are prepended with two dashes, e.g. `--` or 
+   `--debug --verbose --ignore-proxy`.
+ * When setting a value to an option, always put an equals (`=`) 
+   between the name and the setting, e.g. `--source="'local'"`.
+ * When setting a value to an option, always surround the value 
+   properly with double quotes bookending apostrophes, e.g. 
+   `--source="'internal_server'"`.
+ * If you are building PowerShell scripts, you can most likely just 
+   simply use apostrophes surrounding option values, e.g. 
+   `--source='internal_server'`.
+ * Prefer upgrade to install in scripts. You can't `install` to a newer
+   version of something, but you can `choco upgrade` which will do both
+   upgrade or install (unless switched off explicitly).
+ * If you are sharing the script with others, pass `--source` to be 
+   explicit about where the package is coming from. Use full link and 
+   not source name ('https://chocolatey.org/api/v2' versus 
+   'chocolatey').
+ * If parsing output, you might want to use `--limit-output`/`-r` to 
+   get output in a more machine parseable format. NOTE: Not all 
+   commands handle return of information in an easily digestible 
+   output.
+ * Use exit codes to determine status. Chocolatey exits with 0 when 
+   everything worked appropriately and other exits codes like 1 when 
+   things error. There are package specific exit codes that are 
+   recommended to be used and reboot indicating exit codes as well. To
+   check exit code when using PowerShell, immediately call 
+   `$exitCode = $LASTEXITCODE` to get the value choco exited with.
+
+Here's an example following bad practices (line breaks added for 
+ readability):
+
+  `choco install pkg1 -y -params '/Option:Value /Option2:value with 
+   spaces' --c4b-option 'Yaass' --option-that-is-new 'dude upgrade'`
+
+Now here is that example written with best practices (again line 
+ breaks added for readability - there are not line continuations 
+ for choco):
+
+  `choco upgrade pkg1 -y --source="'https://chocolatey.org/api/v2'" 
+   --package-parameters="'/Option:Value /Option2:value with spaces'"
+   --c4b-option="'Yaass'" --option-that-is-new="'dude upgrade'"`
+
+Note the differences between the two: 
+ * Which is more self-documenting? 
+ * Which will allow for the newest version of something installed or 
+   upgraded to (which allows for more environmental consistency on
+   packages and versions)?
+ * Which may throw an error on a badly passed option?
+ * Which will throw errors on unknown option values? See explanation 
+   below.
+
+Chocolatey ignores options it doesn't understand, but it can only
+ ignore option values if they are tied to the option with an
+ equals sign ('='). Note those last two options in the examples above?
+ If you roll off of a commercial edition or someone with older version
+ attempts to run the badly crafted script `--c4b-option 'Yaass'
+ --option-that-is-new 'dude upgrade'`, they are likely to see errors on
+ 'Yaass' and 'dude upgrade' because they are not explicitly tied to the 
+ option they are written after. Now compare that to the other script. 
+ Choco will ignore `--c4b-option="'Yaass'"` and
+ `--option-that-is-new="'dude upgrade'"` as a whole when it doesn't
+ register the options. This means that your script doesn't error.
+
+Following these scripting best practices will ensure your scripts work
+ everywhere they are used and with newer versions of Chocolatey.
+
+
+2019-07-29 12:02:52,009 824 [INFO ] - Default Options and Switches
+2019-07-29 12:02:52,071 824 [INFO ] - Chocolatey v0.10.15
+2019-07-29 12:03:42,136 11728 [INFO ] - ============================================================
+2019-07-29 12:03:42,560 11728 [INFO ] - Chocolatey v0.10.15
+2019-07-29 12:03:42,560 11728 [INFO ] - Please run 'choco -?' or 'choco <command> -?' for help menu.
+2019-07-29 12:03:54,933 3280 [INFO ] - ============================================================
+2019-07-29 12:03:55,345 3280 [INFO ] - Chocolatey v0.10.15
+2019-07-29 12:03:55,348 3280 [INFO ] - Please run 'choco -?' or 'choco <command> -?' for help menu.
+2019-07-29 12:03:56,803 3696 [INFO ] - ============================================================
+2019-07-29 12:03:57,199 3696 [INFO ] - Chocolatey v0.10.15
+2019-07-29 12:03:57,199 3696 [INFO ] - Please run 'choco -?' or 'choco <command> -?' for help menu.
+2019-07-29 12:03:58,740 7204 [INFO ] - ============================================================
+2019-07-29 12:03:59,144 7204 [INFO ] - Chocolatey v0.10.15
+2019-07-29 12:03:59,159 7204 [INFO ] - Please run 'choco -?' or 'choco <command> -?' for help menu.
+2019-07-29 12:04:00,589 1988 [INFO ] - ============================================================
+2019-07-29 12:04:01,003 1988 [INFO ] - Chocolatey v0.10.15
+2019-07-29 12:04:01,003 1988 [INFO ] - Please run 'choco -?' or 'choco <command> -?' for help menu.
+2019-07-29 12:04:04,996 9568 [INFO ] - ============================================================
+2019-07-29 12:04:05,422 9568 [INFO ] - Chocolatey v0.10.15
+2019-07-29 12:04:05,424 9568 [INFO ] - Please run 'choco -?' or 'choco <command> -?' for help menu.
+2019-07-29 12:06:21,273 2632 [INFO ] - ============================================================
+2019-07-29 12:06:21,677 2632 [INFO ] - Chocolatey v0.10.15
+2019-07-29 12:06:21,680 2632 [INFO ] - Please run 'choco -?' or 'choco <command> -?' for help menu.
+2019-07-29 12:06:32,422 3988 [INFO ] - ============================================================
+2019-07-29 12:06:32,815 3988 [INFO ] - Chocolatey v0.10.15
+2019-07-29 12:06:32,815 3988 [INFO ] - Please run 'choco -?' or 'choco <command> -?' for help menu.
+2019-07-29 12:06:49,535 6184 [INFO ] - ============================================================
+2019-07-29 12:06:49,940 6184 [INFO ] - This is a listing of all of the different things you can pass to choco.
+
+2019-07-29 12:06:49,943 6184 [INFO ] - Commands
+2019-07-29 12:06:49,944 6184 [INFO ] - 
+ * list - lists remote or local packages
+ * find - searches remote or local packages (alias for search)
+ * search - searches remote or local packages (alias for list)
+ * info - retrieves package information. Shorthand for choco search pkgname --exact --verbose
+ * install - installs packages from various sources
+ * pin - suppress upgrades for a package
+ * outdated - retrieves packages that are outdated. Similar to upgrade all --noop
+ * upgrade - upgrades packages from various sources
+ * uninstall - uninstalls a package
+ * pack - packages up a nuspec to a compiled nupkg
+ * push - pushes a compiled nupkg
+ * new - generates files necessary for a chocolatey package from a template
+ * sources - view and configure default sources (alias for source)
+ * source - view and configure default sources
+ * config - Retrieve and configure config file settings
+ * feature - view and configure choco features
+ * features - view and configure choco features (alias for feature)
+ * setapikey - retrieves, saves or deletes an apikey for a particular source (alias for apikey)
+ * apikey - retrieves, saves or deletes an apikey for a particular source
+ * unpackself - have chocolatey set itself up
+ * version - [DEPRECATED] will be removed in v1 - use `choco outdated` or `cup <pkg|all> -whatif` instead
+ * update - [DEPRECATED] RESERVED for future use (you are looking for upgrade, these are not the droids you are looking for)
+
+
+Please run chocolatey with `choco command -help` for specific help on
+ each command.
+
+2019-07-29 12:06:49,945 6184 [INFO ] - How To Pass Options / Switches
+2019-07-29 12:06:49,946 6184 [INFO ] - 
+You can pass options and switches in the following ways:
+
+ * Unless stated otherwise, an option/switch should only be passed one
+   time. Otherwise you may find weird/non-supported behavior.
+ * `-`, `/`, or `--` (one character switches should not use `--`)
+ * **Option Bundling / Bundled Options**: One character switches can be
+   bundled. e.g. `-d` (debug), `-f` (force), `-v` (verbose), and `-y`
+   (confirm yes) can be bundled as `-dfvy`.
+ * NOTE: If `debug` or `verbose` are bundled with local options
+   (not the global ones above), some logging may not show up until after
+   the local options are parsed.
+ * **Use Equals**: You can also include or not include an equals sign
+   `=` between options and values.
+ * **Quote Values**: When you need to quote an entire argument, such as
+   when using spaces, please use a combination of double quotes and
+   apostrophes (`"'value'"`). In cmd.exe you can just use double quotes
+   (`"value"`) but in powershell.exe you should use backticks
+   (`` `"value`" ``) or apostrophes (`'value'`). Using the combination
+   allows for both shells to work without issue, except for when the next
+   section applies.
+ * **Pass quotes in arguments**: When you need to pass quoted values to
+   to something like a native installer, you are in for a world of fun. In
+   cmd.exe you must pass it like this: `-ia "/yo=""Spaces spaces"""`. In
+   PowerShell.exe, you must pass it like this: `-ia '/yo=""Spaces spaces""'`.
+   No other combination will work. In PowerShell.exe if you are on version
+   v3+, you can try `--%` before `-ia` to just pass the args through as is,
+   which means it should not require any special workarounds.
+ * **Periods in PowerShell**: If you need to pass a period as part of a
+   value or a path, PowerShell doesn't always handle it well. Please
+   quote those values using "Quote Values" section above.
+ * Options and switches apply to all items passed, so if you are
+   installing multiple packages, and you use `--version=1.0.0`, choco
+   is going to look for and try to install version 1.0.0 of every
+   package passed. So please split out multiple package calls when
+   wanting to pass specific options.
+
+2019-07-29 12:06:49,948 6184 [INFO ] - Scripting / Integration - Best Practices / Style Guide
+2019-07-29 12:06:49,949 6184 [INFO ] - 
+When writing scripts, such as PowerShell scripts passing options and
+switches, there are some best practices to follow to ensure that you
+don't run into issues later. This also applies to integrations that
+are calling Chocolatey and parsing output. Chocolatey **uses** 
+PowerShell, but it is an exe, so it cannot return PowerShell objects.
+
+Following these practices ensures both readability of your scripts AND 
+compatibility across different versions and editions of Chocolatey. 
+Following this guide will ensure your experience is not frustrating 
+based on choco not receiving things you think you are passing to it.
+
+ * For consistency, always use `choco`, not `choco.exe`. Never use 
+   shortcut commands like `cinst` or `cup`.
+ * Always have the command as the first argument to `choco. e.g.
+   `choco install`, where `install` is the command.
+ * If there is a subcommand, ensure that is the second argument. e.g.
+   `choco source list`, where `source` is the command and `list` is the
+   subcommand.
+ * Typically the subject comes next. If installing packages, the 
+   subject would be the package names, e.g. `choco install pkg1 pkg2`.
+ * Never use 'nupkg' or point directly to a nupkg file UNLESS using
+   'choco push'. Use the source folder instead, e.g. `choco install
+   <package id> --source="'c:\folder\with\package'"` instead of 
+   `choco install DoNotDoThis.1.0.nupkg` or `choco install DoNotDoThis 
+    --source="'c:\folder\with\package\DoNotDoThis.1.0.nupkg'"`.
+ * Switches and parameters are called simply options. Options come 
+   after the subject. e.g. `choco install pkg1 --debug --verbose`.
+ * Never use the force option (`--force`/`-f`) in scripts (or really
+   otherwise as a default mode of use). Force is an override on 
+   Chocolatey behavior. If you are wondering why Chocolatey isn't doing
+   something like the documentation says it should, it's likely because
+   you are using force. Stop.
+ * Always use full option name. If the short option is `-n`, and the
+   full option is `--name`, use `--name`. The only acceptable short
+   option for use in scripts is `-y`. Find option names in help docs
+   online or through `choco -?` /`choco [Command Name] -?`.
+ * For scripts that are running automated, always use `-y`. Do note 
+   that even with `-y` passed, some things / state issues detected will
+   temporarily stop for input - the key here is temporarily. They will 
+   continue without requiring any action after the temporary timeout
+   (typically 30 seconds).
+ * Full option names are prepended with two dashes, e.g. `--` or 
+   `--debug --verbose --ignore-proxy`.
+ * When setting a value to an option, always put an equals (`=`) 
+   between the name and the setting, e.g. `--source="'local'"`.
+ * When setting a value to an option, always surround the value 
+   properly with double quotes bookending apostrophes, e.g. 
+   `--source="'internal_server'"`.
+ * If you are building PowerShell scripts, you can most likely just 
+   simply use apostrophes surrounding option values, e.g. 
+   `--source='internal_server'`.
+ * Prefer upgrade to install in scripts. You can't `install` to a newer
+   version of something, but you can `choco upgrade` which will do both
+   upgrade or install (unless switched off explicitly).
+ * If you are sharing the script with others, pass `--source` to be 
+   explicit about where the package is coming from. Use full link and 
+   not source name ('https://chocolatey.org/api/v2' versus 
+   'chocolatey').
+ * If parsing output, you might want to use `--limit-output`/`-r` to 
+   get output in a more machine parseable format. NOTE: Not all 
+   commands handle return of information in an easily digestible 
+   output.
+ * Use exit codes to determine status. Chocolatey exits with 0 when 
+   everything worked appropriately and other exits codes like 1 when 
+   things error. There are package specific exit codes that are 
+   recommended to be used and reboot indicating exit codes as well. To
+   check exit code when using PowerShell, immediately call 
+   `$exitCode = $LASTEXITCODE` to get the value choco exited with.
+
+Here's an example following bad practices (line breaks added for 
+ readability):
+
+  `choco install pkg1 -y -params '/Option:Value /Option2:value with 
+   spaces' --c4b-option 'Yaass' --option-that-is-new 'dude upgrade'`
+
+Now here is that example written with best practices (again line 
+ breaks added for readability - there are not line continuations 
+ for choco):
+
+  `choco upgrade pkg1 -y --source="'https://chocolatey.org/api/v2'" 
+   --package-parameters="'/Option:Value /Option2:value with spaces'"
+   --c4b-option="'Yaass'" --option-that-is-new="'dude upgrade'"`
+
+Note the differences between the two: 
+ * Which is more self-documenting? 
+ * Which will allow for the newest version of something installed or 
+   upgraded to (which allows for more environmental consistency on
+   packages and versions)?
+ * Which may throw an error on a badly passed option?
+ * Which will throw errors on unknown option values? See explanation 
+   below.
+
+Chocolatey ignores options it doesn't understand, but it can only
+ ignore option values if they are tied to the option with an
+ equals sign ('='). Note those last two options in the examples above?
+ If you roll off of a commercial edition or someone with older version
+ attempts to run the badly crafted script `--c4b-option 'Yaass'
+ --option-that-is-new 'dude upgrade'`, they are likely to see errors on
+ 'Yaass' and 'dude upgrade' because they are not explicitly tied to the 
+ option they are written after. Now compare that to the other script. 
+ Choco will ignore `--c4b-option="'Yaass'"` and
+ `--option-that-is-new="'dude upgrade'"` as a whole when it doesn't
+ register the options. This means that your script doesn't error.
+
+Following these scripting best practices will ensure your scripts work
+ everywhere they are used and with newer versions of Chocolatey.
+
+
+2019-07-29 12:06:49,959 6184 [INFO ] - Default Options and Switches
+2019-07-29 12:06:50,025 6184 [INFO ] - Chocolatey v0.10.15
+2019-08-19 11:38:36,964 11152 [INFO ] - ============================================================
+2019-08-19 11:38:37,167 11152 [INFO ] - Chocolatey v0.10.15
+2019-08-19 11:38:37,292 11152 [INFO ] - 2 validations performed. 2 success(es), 0 warning(s), and 0 error(s).
+2019-08-19 11:38:37,292 11152 [WARN ] - Chocolatey detected you are not running from an elevated command shell
+ (cmd/powershell).
+2019-08-19 11:38:37,292 11152 [WARN ] - 
+ You may experience errors - many functions/packages
+ require admin rights. Only advanced users should run choco w/out an
+ elevated shell. When you open the command shell, you should ensure 
+ that you do so with "Run as Administrator" selected. If you are 
+ attempting to use Chocolatey in a non-administrator setting, you
+ must select a different location other than the default install
+ location. See 
+ https://chocolatey.org/install#non-administrative-install for details.
+
+2019-08-19 11:38:37,321 11152 [INFO ] - For the question below, you have 20 seconds to make a selection.
+2019-08-19 11:38:37,324 11152 [INFO ] - 
+ Do you want to continue?
+2019-08-19 11:38:37,324 11152 [INFO ] -  1) yes
+2019-08-19 11:38:37,325 11152 [INFO ] -  2) no
+2019-08-19 11:38:48,084 11152 [INFO ] - Choice selected: 'yes'
+2019-08-19 11:38:48,099 11152 [INFO ] - Installing the following packages:
+2019-08-19 11:38:48,099 11152 [INFO ] - puppet-agent.portable
+2019-08-19 11:38:48,099 11152 [INFO ] - By installing you accept licenses for the packages.
+2019-08-19 11:38:49,184 11152 [INFO ] - [NuGet] Attempting to resolve dependency 'lessmsi (= 1.1.5.20140118)'.
+2019-08-19 11:38:52,735 11152 [INFO ] - [NuGet] Installing 'lessmsi 1.6.91'.
+2019-08-19 11:38:52,735 11152 [ERROR] - puppet-agent.portable not installed. An error occurred during installation:
+ Access to the path 'C:\ProgramData\chocolatey\lib\lessmsi\tools' is denied.
+2019-08-19 11:38:52,735 11152 [INFO ] - puppet-agent.portable package files install completed. Performing other installation steps.
+2019-08-19 11:38:52,750 11152 [WARN ] - This is try 1/3. Retrying after 300 milliseconds.
+ Error converted to warning:
+ Access to the path 'C:\ProgramData\chocolatey\.chocolatey' is denied.
+2019-08-19 11:38:53,074 11152 [WARN ] - This is try 2/3. Retrying after 400 milliseconds.
+ Error converted to warning:
+ Access to the path 'C:\ProgramData\chocolatey\.chocolatey' is denied.
+2019-08-19 11:38:53,481 11152 [ERROR] - Maximum tries of 3 reached. Throwing error.
+2019-08-19 11:38:53,492 11152 [ERROR] - Cannot create directory "C:\ProgramData\chocolatey\.chocolatey". Error was:
+System.UnauthorizedAccessException: Access to the path 'C:\ProgramData\chocolatey\.chocolatey' is denied.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.Directory.InternalCreateDirectory(String fullPath, String path, Object dirSecurityObj, Boolean checkHost)
+   at System.IO.Directory.InternalCreateDirectoryHelper(String path, Boolean checkHost)
+   at chocolatey.infrastructure.filesystem.DotNetFileSystem.<>c__DisplayClass64.<create_directory>b__63()
+   at chocolatey.infrastructure.tolerance.FaultTolerance.<>c__DisplayClass1.<retry>b__0()
+   at chocolatey.infrastructure.tolerance.FaultTolerance.retry[T](Int32 numberOfTries, Func`1 function, Int32 waitDurationMilliseconds, Int32 increaseRetryByMilliseconds, Boolean isSilent)
+   at chocolatey.infrastructure.filesystem.DotNetFileSystem.create_directory(String directoryPath)
+   at chocolatey.infrastructure.filesystem.DotNetFileSystem.create_directory_if_not_exists(String directoryPath, Boolean ignoreError)
+2019-08-19 11:38:53,508 11152 [WARN ] - 
+Chocolatey installed 0/0 packages. 
+ See the log for details (C:\ProgramData\chocolatey\logs\chocolatey.log).
+2019-08-19 11:38:53,570 11152 [ERROR] - Access to the path 'C:\ProgramData\chocolatey\.chocolatey' is denied.
+2019-08-19 11:38:53,570 11152 [ERROR] - More Details: System.UnauthorizedAccessException: Access to the path 'C:\ProgramData\chocolatey\.chocolatey' is denied.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.Directory.InternalCreateDirectory(String fullPath, String path, Object dirSecurityObj, Boolean checkHost)
+   at System.IO.Directory.InternalCreateDirectoryHelper(String path, Boolean checkHost)
+   at chocolatey.infrastructure.filesystem.DotNetFileSystem.<>c__DisplayClass64.<create_directory>b__63()
+   at chocolatey.infrastructure.tolerance.FaultTolerance.<>c__DisplayClass1.<retry>b__0()
+   at chocolatey.infrastructure.tolerance.FaultTolerance.retry[T](Int32 numberOfTries, Func`1 function, Int32 waitDurationMilliseconds, Int32 increaseRetryByMilliseconds, Boolean isSilent)
+   at chocolatey.infrastructure.filesystem.DotNetFileSystem.create_directory(String directoryPath)
+   at chocolatey.infrastructure.filesystem.DotNetFileSystem.create_directory_if_not_exists(String directoryPath, Boolean ignoreError)
+   at chocolatey.infrastructure.app.services.ChocolateyPackageInformationService.save_package_information(ChocolateyPackageInformation packageInformation)
+   at chocolatey.infrastructure.app.services.ChocolateyPackageService.handle_package_result(PackageResult packageResult, ChocolateyConfiguration config, CommandNameType commandName)
+   at chocolatey.infrastructure.app.services.NugetService.install_run(ChocolateyConfiguration config, Action`1 continueAction)
+   at chocolatey.infrastructure.app.services.ChocolateyPackageService.perform_source_runner_function[T](ChocolateyConfiguration config, Func`2 function)
+   at chocolatey.infrastructure.app.services.ChocolateyPackageService.install_run(ChocolateyConfiguration config)
+   at chocolatey.infrastructure.app.runners.GenericRunner.run(ChocolateyConfiguration config, Container container, Boolean isConsole, Action`1 parseArgs)
+   at chocolatey.infrastructure.app.runners.ConsoleApplication.run(String[] args, ChocolateyConfiguration config, Container container)
+   at chocolatey.console.Program.Main(String[] args)
+2019-08-19 11:39:49,525 6156 [INFO ] - ============================================================
+2019-08-19 11:39:49,650 6156 [INFO ] - Chocolatey v0.10.15
+2019-08-19 11:39:49,666 6156 [INFO ] - Please run 'choco -?' or 'choco <command> -?' for help menu.
