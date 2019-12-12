@@ -50,22 +50,22 @@ public class FileControllerTest extends BasicWiremockTest {
                 .andExpect(status().isOk()).andReturn();
     }
 
-    @Test
-    public void testUploadMultipleFiles() throws Exception {
-
-        //List<MockMultipartFile> mockMultipartFiles = new ArrayList<>(3);
-
-        MockMultipartFile mockMultipartFile1 = new MockMultipartFile("file", UPLOAD_FILE_NAME_1,
-                "multipart/form-data", is);
-
-        MockMultipartFile mockMultipartFile2 = new MockMultipartFile("file", "FINDBIZ-SPECS.pdf",
-                "multipart/form-data", is);
-
-        //mockMultipartFiles.add(mockMultipartFile);
-
-        this.mockMvc.perform(MockMvcRequestBuilders.fileUpload("/uploadMultipleFiles")
-                .file(mockMultipartFile1).contentType(MediaType.MULTIPART_FORM_DATA))
-                .andDo(print())
-                .andExpect(status().isOk()).andReturn();
-    }
+//    @Test
+//    public void testUploadMultipleFiles() throws Exception {
+//
+//        //List<MockMultipartFile> mockMultipartFiles = new ArrayList<>(3);
+//
+//        MockMultipartFile mockMultipartFile1 = new MockMultipartFile("file", UPLOAD_FILE_NAME_1,
+//                "multipart/form-data", is);
+//
+//        MockMultipartFile mockMultipartFile2 = new MockMultipartFile("file", "FINDBIZ-SPECS.pdf",
+//                "multipart/form-data", is);
+//
+//        //mockMultipartFiles.add(mockMultipartFile);
+//
+//        this.mockMvc.perform(MockMvcRequestBuilders.fileUpload("/uploadMultipleFiles")
+//                .file(mockMultipartFile1).contentType(MediaType.MULTIPART_FORM_DATA))
+//                .andDo(print())
+//                .andExpect(status().isOk()).andReturn();
+//    }
 }
