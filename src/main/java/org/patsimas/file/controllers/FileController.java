@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
+@CrossOrigin("http://127.0.0.1:5500")
 @RestController
 @Slf4j
 public class FileController {
