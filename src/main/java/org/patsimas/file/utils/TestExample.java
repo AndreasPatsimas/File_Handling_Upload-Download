@@ -36,7 +36,6 @@ public class TestExample {
         boolean deletedflag = false;
 
 
-
         Session session = setupJsch("****", "****", "****");
 
         ChannelSftp channelSftp = openSFTPConnection(session);
@@ -48,9 +47,6 @@ public class TestExample {
 //        if(deletedflag){
 //            System.out.println("File deleted successfully.");
 //        }
-
-
-        System.out.println(channelSftp.isConnected());
 
 
     }

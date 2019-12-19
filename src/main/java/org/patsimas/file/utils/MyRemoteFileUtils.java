@@ -15,19 +15,22 @@ public class MyRemoteFileUtils {
 
         channelSftp.connect();
 
-        System.out.println("ChannelSftp is connected: " + channelSftp.isConnected());
+        System.out.println("ChannelSftp connection is made: " + channelSftp.isConnected());
 
         return channelSftp;
     }
 
-    public static void closeSFTPConnection(Session client) {
-        if ( client!=null && client.isConnected() ) {
+    public static void closeSFTPConnection(Session jschSession) {
+        if ( jschSession!=null && jschSession.isConnected() ) {
 
             try {
-                client.disconnect();
+
+                jschSession.disconnect();
+
+                System.out.println("ChannelSftp connection is closed: " + !jschSession.isConnected());
             }
             catch (Throwable f) {
-                System.err.println("An error occured while trying to disconnect from the FTP server [" + client.getHost() + "].");
+                System.err.println("An error occured while trying to disconnect from the FTP server [" + jschSession.getHost() + "].");
             }
         }
     }
