@@ -31,12 +31,11 @@ public class TestExample {
 //            ex.printStackTrace();
 //        }
 
-        //listFilesForFolder(new File("//ICAP-FS-CL3FS1/Archiving/2019/BSClipping"));
-        //listFilesForFolder(new File("//ICAP-FS-CL3FS1/Archiving/2019/BSClipping"));
+
 
         boolean deletedflag = false;
 
-        //MyFileUtils.deleteDirectory(new File("//ICAP-FS-CL3FS1/Archiving/BUSINESS_REGISTRY/GEMHANALYTICS/TEST - Copy"));
+
 
         Session session = setupJsch("****", "****", "****");
 
@@ -53,53 +52,6 @@ public class TestExample {
 
         System.out.println(channelSftp.isConnected());
 
-//        String server = "wasprd02";
-//        int port = 21;
-//        String user = "root";
-//        String pass = "banana";
-//        FTPClient ftpClient = new FTPClient();
-//
-//        try {
-//
-//            ftpClient.connect(server);
-//
-//            int replyCode = ftpClient.getReplyCode();
-//            if (!FTPReply.isPositiveCompletion(replyCode)) {
-//                System.out.println("Connect failed");
-//                return;
-//            }
-//
-//            boolean success = ftpClient.login(user, pass);
-//
-//            if (!success) {
-//                System.out.println("Could not login to the server");
-//                return;
-//            }
-//            else
-//                System.out.println(success + " Success!!!!");
-//            String fileToDelete = "/repository/video/cool.mp4";
-//
-//            boolean deleted = ftpClient.deleteFile(fileToDelete);
-//            if (deleted) {
-//                System.out.println("The file was deleted successfully.");
-//            } else {
-//                System.out.println("Could not delete the  file, it may not exist.");
-//            }
-//
-//        } catch (IOException ex) {
-//            System.out.println("Oh no, there was an error: " + ex.getMessage());
-//            ex.printStackTrace();
-//        } finally {
-//            // logs out and disconnects from server
-//            try {
-//                if (ftpClient.isConnected()) {
-//                    ftpClient.logout();
-//                    ftpClient.disconnect();
-//                }
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//            }
-//        }
 
     }
 
