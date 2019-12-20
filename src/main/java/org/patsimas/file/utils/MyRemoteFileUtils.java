@@ -1,11 +1,10 @@
 package org.patsimas.file.utils;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
+import com.jcraft.jsch.*;
 
+import java.util.Collection;
 import java.util.Properties;
+
 
 public class MyRemoteFileUtils {
 
@@ -49,5 +48,27 @@ public class MyRemoteFileUtils {
         jschSession.connect();
 
         return jschSession;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void deleteNonEmptyDirectory(ChannelSftp channelSftp, String path) throws SftpException {
+
+
+        Collection<ChannelSftp.LsEntry> fileAndFolderList = channelSftp.ls(path);
+
+        for (ChannelSftp.LsEntry item : fileAndFolderList) {
+            if (!item.getAttrs().isDir()) {
+                channelSftp.rm(path + "/" + item.getFilename());
+            } else if (!(".".equals(item.getFilename()) || "..".equals(item.getFilename()))) {
+                try {
+
+                    channelSftp.rmdir(path + "/" + item.getFilename());
+                } catch (Exception e) {
+
+                    deleteNonEmptyDirectory(channelSftp, path + "/" + item.getFilename());
+                }
+            }
+        }
+        channelSftp.rmdir(path);
     }
 }
