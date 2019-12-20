@@ -31,12 +31,14 @@ public class TestExample {
 //            ex.printStackTrace();
 //        }
 
-
+        //listFilesForFolder(new File("//ICAP-FS-CL3FS1/Archiving/2019/BSClipping"));
+        //listFilesForFolder(new File("//ICAP-FS-CL3FS1/Archiving/2019/BSClipping"));
 
         boolean deletedflag = false;
 
+        //MyFileUtils.deleteDirectory(new File("//ICAP-FS-CL3FS1/Archiving/BUSINESS_REGISTRY/GEMHANALYTICS/TEST - Copy"));
 
-        Session session = setupJsch("****", "****", "****");
+        Session session = setupJsch("wasprd02", "root", "banana");
 
         ChannelSftp channelSftp = openSFTPConnection(session);
 
