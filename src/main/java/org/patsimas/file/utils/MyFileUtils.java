@@ -1,6 +1,7 @@
 package org.patsimas.file.utils;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 
 public class MyFileUtils {
@@ -81,6 +82,40 @@ public class MyFileUtils {
         catch(Exception e){
 
             e.printStackTrace();
+        }
+    }
+
+    // prefix must be sth like this: dailyReport_08.*\\.txt
+    public static void deleteFilesWithSamePrefix(String directoryPath, String prefix){
+
+        final File folder = new File(directoryPath);
+
+        final File[] files = folder.listFiles( new FilenameFilter() {
+            @Override
+            public boolean accept( final File dir,
+                                   final String name ) {
+                return name.matches( prefix );
+            }
+        } );
+        for ( final File file : files ) {
+            if ( !file.delete() ) {
+                System.err.println( "Can't remove " + file.getAbsolutePath() );
+            }
+        }
+    }
+
+    public static void deleteFilesWithSameExtension(String directoryPath, String extension){
+
+        File folder = new File(directoryPath);
+
+        File fList[] = folder.listFiles();
+
+        for (int i = 0; i < fList.length; i++) {
+
+            if (fList[i].getName().endsWith(extension)) {
+
+                fList[i].delete();
+            }
         }
     }
 
