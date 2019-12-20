@@ -1,6 +1,7 @@
 package org.patsimas.file;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.http.MediaType;
@@ -26,7 +27,9 @@ public class FileControllerTest extends BasicWiremockTest {
 
     private static final String DOWNLOAD_FILE_NAME = "LICENSE.txt";
 
-    private static final String UPLOAD_FILE_NAME_1 = "ProjectCenter_20191119.xlsx";
+    //private static final String UPLOAD_FILE_NAME_1 = "ProjectCenter_20191119.xlsx";
+
+    private static final String UPLOAD_FILE_NAME_1 = "Eniaio.pdf";
 
     @Test
     public void downloadFile() throws Exception {
