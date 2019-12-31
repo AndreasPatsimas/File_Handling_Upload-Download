@@ -1,8 +1,16 @@
 package org.patsimas.file.utils;
 
+import org.patsimas.file.exceptions.FileStorageException;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class MyFileUtils {
 
@@ -116,6 +124,47 @@ public class MyFileUtils {
 
                 fList[i].delete();
             }
+        }
+    }
+
+    public static void emptyDirectory(File file){
+        if (file.isDirectory()) {
+
+            if (file.list().length != 0) {
+
+                for (String temp : file.list()) {
+
+                    deleteFile(new File(file.getAbsolutePath() + "/" + temp));
+                }
+            }
+        }
+    }
+
+    public static String storeFileFromServer(MultipartFile file, String path) {
+
+        Path fileStorageLocation = Paths.get(path)
+                .toAbsolutePath().normalize();
+
+        try {
+            Files.createDirectories(fileStorageLocation);
+        } catch (Exception ex) {
+            throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", ex);
+        }
+
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+        try {
+
+            if(fileName.contains("..")) {
+                throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+            }
+
+            Path targetLocation = fileStorageLocation.resolve(fileName);
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            return fileName;
+        } catch (IOException ex) {
+            throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }
     }
 

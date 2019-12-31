@@ -63,19 +63,19 @@ public class TestExample {
 //
 //        MyFileUtils.deleteDirectory(new File("//ICAP-FS-CL3FS1/Archiving/BUSINESS_REGISTRY/GEMHANALYTICS/TEST - Copy"));
 //
-        Session session = setupJsch("****", "****", "****");
+        Session session = setupJsch("wasprd02", "root", "banana");
 
         ChannelSftp channelSftp = openSFTPConnection(session);
 
 //        closeSFTPConnection(session);
 
-//        deleteNonEmptyDirectory(channelSftp,"/tmp/afa");
+//        deleteNonEmptyDirectory(channelSftp,"/tmp/af/teersempty");
 
 //        deleteRemoteFilesWithSameExtension(channelSftp, "/tmp/af/", ".xlsx");
 
 //        deleteRemoteFilesWithSamePrefix(channelSftp, "/tmp/af/", "dailyReport_08.*\\.txt");
 
-        deleteRemoteFilesExceptLastInserted(channelSftp, "/tmp/af/", ".xml");
+        //deleteRemoteFilesExceptLastInserted(channelSftp, "/tmp/af/", ".xml");
 
 //        channelSftp.rm("/tmp/af/ap.txt");
 //        channelSftp.rmdir("/tmp/af"); // This method removes the file from remote server
