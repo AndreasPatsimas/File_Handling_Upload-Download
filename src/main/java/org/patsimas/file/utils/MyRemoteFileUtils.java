@@ -2,16 +2,7 @@ package org.patsimas.file.utils;
 
 import com.jcraft.jsch.*;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.FileTime;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,6 +51,7 @@ public class MyRemoteFileUtils {
         return jschSession;
     }
 
+    // deletes only directory, no simple file
     @SuppressWarnings("unchecked")
     public static void deleteNonEmptyDirectory(ChannelSftp channelSftp, String path) throws SftpException {
 
@@ -120,64 +112,32 @@ public class MyRemoteFileUtils {
 
     @SuppressWarnings("unchecked")
     public static void deleteRemoteFilesExceptLastInserted(ChannelSftp channelSftp, String path, String extension)
-            throws SftpException, ParseException {
-
-        DateFormat dateFormat = new SimpleDateFormat(
-                "EEE MMM dd HH:mm:ss zzz yyyy");
+            throws SftpException {
 
         final Collection<ChannelSftp.LsEntry> files = channelSftp.ls(path);
 
         List<ChannelSftp.LsEntry> specFiles = files.stream()
                 .filter(file -> file.getFilename().endsWith(extension))
+                .sorted(Comparator.comparing(f -> {
+                    if(f.getFilename().endsWith(extension))
+                        return f.getAttrs().getMtimeString();
+                    else
+                        throw new RuntimeException("no expected file: " + extension);
+                }))
                 .collect(Collectors.toList());
 
-        ChannelSftp.LsEntry file = Collections.max(specFiles, Comparator.comparing(f -> {
+        if(specFiles.size() > 0)
+            specFiles.remove(specFiles.size() - 1);
 
-            if(f.getFilename().endsWith(extension))
-                return f.getAttrs().getMtimeString();
-            else
-                throw new RuntimeException("no expected file: " + extension);
-        }));
+        specFiles.forEach(specFile -> {
+            if(specFile.getFilename().endsWith(extension)){
 
-        System.out.println(file.getFilename());
-
-//        files.forEach(file -> System.out.println(file.getFilename()));
-//
-//        List list = files.stream().collect(
-//                        Collectors.toCollection(
-//                                () -> new TreeSet<>((a, b) -> a.getAttrs().getMtimeString().compareTo(b.getAttrs().getMtimeString()))
-//                        )
-//
-//        ).values().stream().map(TreeSet::last).collect(Collectors.toList());
-
-
-
-
-//        List<Date> dates = new ArrayList<>();
-//
-//        files.stream().map(file ->{
-//
-//            try {
-//                if(file.getFilename().endsWith(extension))
-//                    dates.add(dateFormat.parse(file.getAttrs().getMtimeString()));
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//
-//            return dates;
-//        }).collect(Collectors.toList());
-//
-//        Date date = dates.stream().map(date1 -> date1).max(Date::compareTo).orElseThrow(NoSuchElementException::new);
-//
-//        files.forEach(file -> {
-//            if(file.getFilename().endsWith(extension)) {
-//                try {
-//                    if(!date.toString().equals(file.getAttrs().getMtimeString()))
-//                        System.out.println(file.getFilename() + ": " + dateFormat.parse(file.getAttrs().getMtimeString()));
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+                try {
+                    channelSftp.rm((path + specFile.getFilename()));
+                } catch (SftpException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
