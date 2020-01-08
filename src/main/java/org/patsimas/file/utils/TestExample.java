@@ -73,7 +73,7 @@ public class TestExample {
 
 //        deleteRemoteFilesWithSameExtension(channelSftp, "/tmp/af/", ".xlsx");
 
-//        deleteRemoteFilesWithSamePrefix(channelSftp, "/tmp/af/", "dailyReport_08.*\\.txt");
+        deleteRemoteFilesWithSamePrefix(channelSftp, "/tmp/af/", "job_");
 
         //deleteRemoteFilesExceptLastInserted(channelSftp, "/tmp/af/", ".xml");
 
@@ -83,6 +83,8 @@ public class TestExample {
 //        if(deletedflag){
 //            System.out.println("File deleted successfully.");
 //        }
+
+        //exceedRetentionPolicy(channelSftp, "/tmp/.com_ibm_tools_attach");
 
         closeSFTPConnection(session);
 

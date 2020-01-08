@@ -3,8 +3,16 @@ package org.patsimas.file.utils;
 import com.jcraft.jsch.*;
 
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 
 public class MyRemoteFileUtils {
@@ -92,7 +100,6 @@ public class MyRemoteFileUtils {
         });
     }
 
-    // prefix must be sth like this: dailyReport_08.*\\.txt
     @SuppressWarnings("unchecked")
     public static void deleteRemoteFilesWithSamePrefix(ChannelSftp channelSftp, String path, String prefix)
             throws SftpException {
@@ -100,9 +107,12 @@ public class MyRemoteFileUtils {
         final Collection<ChannelSftp.LsEntry> files = channelSftp.ls(path);
 
         files.forEach(file -> {
-            if(file.getFilename().matches(prefix)) {
+            if(file.getFilename().startsWith(prefix)) {
                 try {
-                    channelSftp.rm((path + file.getFilename()));
+                    if(file.getAttrs().isDir())
+                        deleteNonEmptyDirectory(channelSftp, path + file.getFilename());
+                    else
+                        channelSftp.rm(path + file.getFilename());
                 } catch (SftpException e) {
                     e.printStackTrace();
                 }
@@ -140,4 +150,38 @@ public class MyRemoteFileUtils {
             }
         });
     }
+
+    public static boolean isFileExpired(ChannelSftp.LsEntry file, Long retentionPolicyInDays) throws ParseException {
+
+        Long diff = DAYS.between(getFileLocalDate(file.getAttrs().getMtimeString()), getTodayLocalDate());
+
+        if(diff > retentionPolicyInDays)
+            return true;
+
+        return false;
+    }
+
+    private static LocalDate getFileLocalDate(String fileDate) throws ParseException {
+
+        DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
+
+        Date date = formatter.parse(fileDate);
+
+        Instant instant = date.toInstant();
+
+        LocalDate localDate = instant.atZone(ZoneId.of("Europe/Athens")).toLocalDate();
+
+        return localDate;
+    }
+
+    private static LocalDate getTodayLocalDate(){
+
+        return Instant.now().atZone(ZoneId.of("Europe/Athens")).toLocalDate();
+    }
 }
+
+
+//                DateTimeFormatter f = DateTimeFormatter.ofPattern( "E MMM dd HH:mm:ss z uuuu" );
+//
+//                ZonedDateTime zdt = ZonedDateTime.parse( file.getAttrs().getMtimeString() , f );
+//                LocalDate localDate = zdt.toLocalDate();
