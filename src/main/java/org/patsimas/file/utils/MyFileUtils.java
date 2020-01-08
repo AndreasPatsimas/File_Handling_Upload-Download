@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 
 public class MyFileUtils {
 
@@ -168,12 +169,17 @@ public class MyFileUtils {
         }
     }
 
-    public static void listFilesForFolder(File folder) {
+    public static void listFilesForFolder(File folder) throws IOException {
         for (File fileEntry : folder.listFiles()) {
             if (fileEntry.isDirectory()) {
                 listFilesForFolder(fileEntry);
             } else {
                 System.out.println(fileEntry.getName());
+//                Path file = fileEntry.toPath();
+//                BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
+//                System.out.println("creationTime: " + attr.creationTime());
+//                System.out.println("lastAccessTime: " + attr.lastAccessTime());
+//                System.out.println("lastModifiedTime: " + attr.lastModifiedTime());
             }
         }
     }

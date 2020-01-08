@@ -153,23 +153,25 @@ public class MyRemoteFileUtils {
 
         files.forEach(file -> {
 
-            if(file.getAttrs().isDir() && !(file.getFilename().equals(".") || file.getFilename().equals(".."))) {
-                try {
-                    remoteListFilesForFolder(channelSftp, path + file.getFilename() + "/");
-                } catch (Exception e) {
-                    e.printStackTrace();
+            if(!(file.getFilename().equals(".") || file.getFilename().equals(".."))){
+
+                if(file.getAttrs().isDir()) {
+                    try {
+                        remoteListFilesForFolder(channelSftp, path + file.getFilename() + "/");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-            else
-                if(!(file.getFilename().equals(".") || file.getFilename().equals("..")))
+                else
                     System.out.println(file.getFilename());
+            }
         });
-        
+
     }
 
-    public static boolean isFileExpired(ChannelSftp.LsEntry file, Long retentionPolicyInDays) throws ParseException {
+    public static boolean isFileExpired(String fileDate, Long retentionPolicyInDays) throws ParseException {
 
-        Long diff = DAYS.between(getFileLocalDate(file.getAttrs().getMtimeString()), getTodayLocalDate());
+        Long diff = DAYS.between(getFileLocalDate(fileDate), getTodayLocalDate());
 
         if(diff > retentionPolicyInDays)
             return true;

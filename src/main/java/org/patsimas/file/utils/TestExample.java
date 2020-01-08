@@ -78,7 +78,7 @@ public class TestExample {
 
 //        deleteRemoteFilesExceptLastInserted(channelSftp, "/tmp/af/", ".txt");
 
-        remoteListFilesForFolder(channelSftp, "/tmp/af/");
+        //remoteListFilesForFolder(channelSftp, "/tmp/af/");
 
 //        channelSftp.rm("/tmp/af/ap.txt");
 //        channelSftp.rmdir("/tmp/af"); // This method removes the file from remote server
