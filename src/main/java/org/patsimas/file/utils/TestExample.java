@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static org.patsimas.file.utils.MyFileUtils.*;
@@ -73,9 +74,11 @@ public class TestExample {
 
 //        deleteRemoteFilesWithSameExtension(channelSftp, "/tmp/af/", ".xlsx");
 
-        deleteRemoteFilesWithSamePrefix(channelSftp, "/tmp/af/", "job_");
+//        deleteRemoteFilesWithSamePrefix(channelSftp, "/tmp/af/", "job_");
 
-        //deleteRemoteFilesExceptLastInserted(channelSftp, "/tmp/af/", ".xml");
+//        deleteRemoteFilesExceptLastInserted(channelSftp, "/tmp/af/", ".txt");
+
+        remoteListFilesForFolder(channelSftp, "/tmp/af/");
 
 //        channelSftp.rm("/tmp/af/ap.txt");
 //        channelSftp.rmdir("/tmp/af"); // This method removes the file from remote server

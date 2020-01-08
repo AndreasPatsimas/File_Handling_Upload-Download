@@ -147,6 +147,26 @@ public class MyRemoteFileUtils {
         });
     }
 
+    public static void remoteListFilesForFolder(ChannelSftp channelSftp, String path) throws SftpException {
+
+        final Collection<ChannelSftp.LsEntry> files = channelSftp.ls(path);
+
+        files.forEach(file -> {
+
+            if(file.getAttrs().isDir() && !(file.getFilename().equals(".") || file.getFilename().equals(".."))) {
+                try {
+                    remoteListFilesForFolder(channelSftp, path + file.getFilename() + "/");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            else
+                if(!(file.getFilename().equals(".") || file.getFilename().equals("..")))
+                    System.out.println(file.getFilename());
+        });
+        
+    }
+
     public static boolean isFileExpired(ChannelSftp.LsEntry file, Long retentionPolicyInDays) throws ParseException {
 
         Long diff = DAYS.between(getFileLocalDate(file.getAttrs().getMtimeString()), getTodayLocalDate());
