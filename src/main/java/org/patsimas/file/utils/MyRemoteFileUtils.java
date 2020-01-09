@@ -116,6 +116,31 @@ public class MyRemoteFileUtils {
         });
     }
 
+    //preffix: txt.*
+    //suffix: .*.txt
+    //preffix and suffix: dailyReport_08.*\\.txt
+    public static void deleteRemoteFilesWithSamePrefixOrSuffix(ChannelSftp channelSftp, String path, String prefixAndSuffix)
+            throws SftpException {
+
+        final Collection<ChannelSftp.LsEntry> files = channelSftp.ls(path);
+
+        files.forEach(file -> {
+            if(file.getFilename().matches(prefixAndSuffix)) {
+                try {
+
+                    if(file.getAttrs().isDir())
+                        deleteNonEmptyDirectory(channelSftp, path + file.getFilename());
+
+                    else
+                        channelSftp.rm(path + file.getFilename());
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     @SuppressWarnings("unchecked")
     public static void deleteRemoteFilesExceptLastInserted(ChannelSftp channelSftp, String path, String extension)
             throws SftpException {
@@ -147,7 +172,7 @@ public class MyRemoteFileUtils {
         });
     }
 
-    public static void remoteListFilesForFolder(ChannelSftp channelSftp, String path) throws SftpException {
+    public static void getFilesForAllFoldersInPath(ChannelSftp channelSftp, String path) throws SftpException {
 
         final Collection<ChannelSftp.LsEntry> files = channelSftp.ls(path);
 
@@ -157,7 +182,7 @@ public class MyRemoteFileUtils {
 
                 if(file.getAttrs().isDir()) {
                     try {
-                        remoteListFilesForFolder(channelSftp, path + file.getFilename() + "/");
+                        getFilesForAllFoldersInPath(channelSftp, path + file.getFilename() + "/");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
