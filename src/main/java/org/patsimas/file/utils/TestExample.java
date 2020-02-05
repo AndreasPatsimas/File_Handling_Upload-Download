@@ -4,14 +4,19 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import com.opencsv.CSVReader;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
+import org.patsimas.file.domain.Student;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.patsimas.file.utils.MyRemoteFileUtils.*;
@@ -24,34 +29,50 @@ public class TestExample {
 //
 //        ChannelSftp channelSftp = openSFTPConnection(session);
 //
-//        deleteRemoteFilesWithSamePrefixOrSuffix(channelSftp, "/tmp/af/", "dailyReport_08.*\\.txt");
+//        Collection<ChannelSftp.LsEntry> excludefiles = channelSftp.ls("/tmp/af");
+//
+//        List<String> excludeFileNames = excludefiles.stream().map(excludefile -> excludefile.getFilename()).collect(Collectors.toList());
+//
+//        System.out.println(excludeFileNames);
+//
+//        //excludefiles.forEach(excludefile -> System.out.println(excludefile.getFilename()));
 //
 //        closeSFTPConnection(session);
 
-//        List<File> files = Files.list(new File("C:/Directory1/ge").toPath()).map(Path::toFile)
-//                .collect(Collectors.toList());
+        Map<String, String> mapping = new
+                HashMap<String, String>();
+        mapping.put("name", "name");
+        mapping.put("rollno", "rollNo");
+        mapping.put("department", "department");
+        mapping.put("result", "result");
+        mapping.put("cgpa", "pointer");
 
-        //files.forEach(file -> System.out.println(file.getAbsolutePath()));
+        HeaderColumnNameTranslateMappingStrategy<Student> strategy =
+                new HeaderColumnNameTranslateMappingStrategy<Student>();
 
-        File fileDir = new File("C:/Directory1");
-        File fileGe = new File("C:/Directory1/ge");
+        strategy.setType(Student.class);
+        strategy.setColumnMapping(mapping);
 
+        CSVReader csvReader = null;
+        try {
+            csvReader = new CSVReader(new FileReader
+                    ("C:\\Directory1\\studentData.xlsx"));
+        }
+        catch (FileNotFoundException e) {
 
-        List<File> filesGe = Arrays.asList(fileGe.listFiles());
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        CsvToBean csvToBean = new CsvToBean();
 
-        List<String> filesDir = Arrays.asList(fileDir.list());
+        // call the parse method of CsvToBean
+        // pass strategy, csvReader to parse method
+        List<Student> list = csvToBean.parse(strategy, csvReader);
 
-        filesGe.forEach(file -> {
-
-            if(!filesDir.contains(file.getName()))
-                System.out.println(file.getAbsolutePath());
-        });
-
-
-        //boolean b = files.contains(new File("C:/Directory1/ap.txt"));
-
-        //System.out.println(b);
-
+        // print details of Bean object
+        for (Student e : list) {
+            System.out.println(e);
+        }
     }
 
 }
