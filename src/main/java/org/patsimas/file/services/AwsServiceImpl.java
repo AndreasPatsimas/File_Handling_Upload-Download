@@ -54,14 +54,24 @@ public class AwsServiceImpl implements AwsService {
     }
 
     @Override
-    public Resource loadFileAsResource(String directory, String fileName, String format) {
+    public void loadFileAsResource(String directory, String fileName) throws IOException {
 
-//        S3Object s3object = s3client.getObject("ariss3", "aris.xlsx");
-//        S3ObjectInputStream inputStream = s3object.getObjectContent();
-//        File file = new File("C:/Directory1/aris.xlsx");
-//        file.createNewFile();
-//        FileUtils.copyInputStreamToFile(inputStream, file);
 
-        return null;
+
+        S3Object s3object = awsClient.s3Client().getObject(bucketName, fileName);
+        S3ObjectInputStream inputStream = s3object.getObjectContent();
+        File file = new File(buildPath(directory, fileName));
+        file.createNewFile();
+        FileUtils.copyInputStreamToFile(inputStream, file);
+
+        //return null;
+    }
+
+    private String buildPath(String directory, String fileName){
+        StringBuilder sb = new StringBuilder();
+        sb.append(directory)
+                .append("/")
+                .append(fileName);
+        return sb.toString();
     }
 }

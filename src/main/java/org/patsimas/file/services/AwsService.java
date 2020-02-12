@@ -12,5 +12,5 @@ public interface AwsService {
 
     UploadFileResponse uploadFile(MultipartFile file) throws IOException;
 
-    Resource loadFileAsResource(String directory, String fileName, String format);
+    void loadFileAsResource(String directory, String fileName) throws IOException;
 }
