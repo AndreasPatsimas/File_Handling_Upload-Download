@@ -30,18 +30,17 @@ public class AwsController {
     }
 
     @GetMapping("/aws/downloadFile/{fileName:.+}")
-    public /*ResponseEntity<Resource>*/ void downloadFile(@RequestParam("directory") String directory,
-                                                          @PathVariable String fileName,
-                                                          HttpServletRequest request) throws IOException {
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName,
+                                                 HttpServletRequest request) throws IOException {
 
         log.info("Load file {} as Resource", fileName);
 
-        /*Resource resource = */awsService.loadFileAsResource(directory, fileName);
+        Resource resource = awsService.loadFileAsResource(fileName);
 
-        /*return ResponseEntity.ok()
+        return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType(request, resource)))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);*/
+                .body(resource);
     }
 
     private String contentType(HttpServletRequest request, Resource resource){
