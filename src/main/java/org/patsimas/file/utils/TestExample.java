@@ -39,40 +39,42 @@ public class TestExample {
 //
 //        closeSFTPConnection(session);
 
-        Map<String, String> mapping = new
-                HashMap<String, String>();
-        mapping.put("name", "name");
-        mapping.put("rollno", "rollNo");
-        mapping.put("department", "department");
-        mapping.put("result", "result");
-        mapping.put("cgpa", "pointer");
+//        Map<String, String> mapping = new
+//                HashMap<String, String>();
+//        mapping.put("name", "name");
+//        mapping.put("rollno", "rollNo");
+//        mapping.put("department", "department");
+//        mapping.put("result", "result");
+//        mapping.put("cgpa", "pointer");
+//
+//        HeaderColumnNameTranslateMappingStrategy<Student> strategy =
+//                new HeaderColumnNameTranslateMappingStrategy<Student>();
+//
+//        strategy.setType(Student.class);
+//        strategy.setColumnMapping(mapping);
+//
+//        CSVReader csvReader = null;
+//        try {
+//            csvReader = new CSVReader(new FileReader
+//                    ("C:\\Directory1\\studentData.xlsx"));
+//        }
+//        catch (FileNotFoundException e) {
+//
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//        CsvToBean csvToBean = new CsvToBean();
+//
+//        // call the parse method of CsvToBean
+//        // pass strategy, csvReader to parse method
+//        List<Student> list = csvToBean.parse(strategy, csvReader);
+//
+//        // print details of Bean object
+//        for (Student e : list) {
+//            System.out.println(e);
+//        }
 
-        HeaderColumnNameTranslateMappingStrategy<Student> strategy =
-                new HeaderColumnNameTranslateMappingStrategy<Student>();
-
-        strategy.setType(Student.class);
-        strategy.setColumnMapping(mapping);
-
-        CSVReader csvReader = null;
-        try {
-            csvReader = new CSVReader(new FileReader
-                    ("C:\\Directory1\\studentData.xlsx"));
-        }
-        catch (FileNotFoundException e) {
-
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        CsvToBean csvToBean = new CsvToBean();
-
-        // call the parse method of CsvToBean
-        // pass strategy, csvReader to parse method
-        List<Student> list = csvToBean.parse(strategy, csvReader);
-
-        // print details of Bean object
-        for (Student e : list) {
-            System.out.println(e);
-        }
+        MyAwsFileUtils.makeFilePublic("images/bulba.jpg");
     }
 
 }
