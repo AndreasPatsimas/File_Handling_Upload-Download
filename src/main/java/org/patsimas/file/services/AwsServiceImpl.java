@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @PropertySource({ "classpath:application.properties" })
 @Service
@@ -37,6 +40,28 @@ public class AwsServiceImpl implements AwsService {
 
     @Autowired
     AwsClient awsClient;
+
+    @Override
+    public List<UploadFileResponse> uploadMultipleFiles(MultipartFile[] files) {
+
+        log.info("Upload {} files process begins", files.length);
+
+        List<UploadFileResponse> uploadFileResponse = Arrays.asList(files)
+                .stream()
+                .map(file -> {
+                    try {
+                        return uploadFile(file);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                })
+                .collect(Collectors.toList());
+
+        log.info("Upload {} files process completed", files.length);
+
+        return uploadFileResponse;
+    }
 
     @Override
     public UploadFileResponse uploadFile(MultipartFile file) throws IOException {

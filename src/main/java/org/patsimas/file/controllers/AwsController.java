@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -27,6 +28,14 @@ public class AwsController {
         log.info("Upload file {}", file.getOriginalFilename());
 
         return awsService.uploadFile(file);
+    }
+
+    @PostMapping("/aws/uploadMultipleFiles")
+    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
+
+        log.info("Upload {} files", files.length);
+
+        return awsService.uploadMultipleFiles(files);
     }
 
     @GetMapping("/aws/downloadFile/{fileName:.+}")
