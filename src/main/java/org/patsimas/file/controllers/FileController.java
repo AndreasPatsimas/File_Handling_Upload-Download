@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -51,6 +52,28 @@ public class FileController {
                 .contentType(MediaType.parseMediaType(contentType(request, resource)))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<Resource> export(HttpServletRequest request) {
+
+        log.info("Load file accounts.xlsx as Resource");
+
+        Resource resource = fileStorageService.export();
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType(request, resource)))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+
+    @GetMapping("/export/fbz")
+    public void export(HttpServletResponse response) {
+
+        log.info("Load file accounts.xlsx as Resource");
+
+        fileStorageService.exportFbz(response);
+
     }
 
     private String contentType(HttpServletRequest request, Resource resource){

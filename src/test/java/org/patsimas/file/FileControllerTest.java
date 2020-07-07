@@ -71,4 +71,16 @@ public class FileControllerTest extends BasicWiremockTest {
 //                .andDo(print())
 //                .andExpect(status().isOk()).andReturn();
 //    }
+
+    @Test
+    public void export() throws Exception {
+
+        this.mockMvc.perform(
+                get(CONTEXT_PATH + "/export/fbz")
+                       // .content(asJsonString(exportListRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .contextPath(CONTEXT_PATH))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 }

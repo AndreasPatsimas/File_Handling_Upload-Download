@@ -1,6 +1,9 @@
 package org.patsimas.file.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.dhatim.fastexcel.Workbook;
+import org.dhatim.fastexcel.Worksheet;
 import org.patsimas.file.domain.UploadFileResponse;
 import org.patsimas.file.exceptions.FileStorageException;
 import org.patsimas.file.exceptions.MyFileNotFoundException;
@@ -8,18 +11,21 @@ import org.patsimas.file.properties.FileStorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,6 +105,85 @@ public class FileStorageServiceImpl implements FileStorageService {
         catch (MalformedURLException ex) {
 
             throw new MyFileNotFoundException("File not found " + fileName, ex);
+        }
+    }
+
+    @Override
+    public Resource export() {
+
+        log.info("Export accounts as Resource process begins.");
+
+        try {
+
+            createXlsxFile();
+
+            File file = new File("accounts.xlsx");
+
+            Path path = file.toPath().toAbsolutePath().normalize();
+
+            Resource resource = new UrlResource(path.toUri());
+
+            if(resource.exists()) {
+
+                log.info("Export accounts as Resource process completed.");
+
+                return resource;
+            }
+
+            else {
+                throw new MyFileNotFoundException("File not found accounts.xlsx");
+            }
+        }
+
+        catch (MalformedURLException ex) {
+
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public void exportFbz(HttpServletResponse response) {
+
+        log.info("Export accounts as Resource process begins.");
+
+        createXlsxFile();
+
+        File file = new File("accounts.xlsx");
+
+        try {
+            setFileToResponse(file, response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        file.delete();
+    }
+
+    private void setFileToResponse(File file, HttpServletResponse response) throws IOException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + file.getName() + "\"");
+        response.getOutputStream().write(FileUtils.readFileToByteArray(file));
+        response.flushBuffer();
+    }
+
+    private void createXlsxFile(){
+        try (OutputStream os =new FileOutputStream("accounts.xlsx")) {
+            Workbook wb = new Workbook(os, "MyApplication", "1.0");
+            Worksheet ws = wb.newWorksheet("Sheet 1");
+            ws.value(0, 0, "This is a string in A2");
+            ws.value(0, 1, new Date());
+            ws.value(0, 2, 1234);
+            ws.value(0, 3, 123456L);
+            ws.value(0, 4, 1.234);
+            wb.finish();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
