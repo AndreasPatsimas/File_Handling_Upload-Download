@@ -6,7 +6,7 @@ import org.dhatim.fastexcel.Worksheet;
 import java.io.*;
 import java.util.Date;
 
-public class Test {
+public class ExportToXlsx {
 
     public static void main(String [] args){
 
