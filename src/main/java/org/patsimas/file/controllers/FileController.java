@@ -3,9 +3,11 @@ package org.patsimas.file.controllers;
 
 import org.patsimas.file.domain.UploadFileResponse;
 import org.patsimas.file.services.FileStorageService;
+import org.patsimas.file.services.PdfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,9 @@ public class FileController {
 
     @Autowired
     private FileStorageService fileStorageService;
+
+    @Autowired
+    private PdfService pdfService;
 
     @PostMapping("/uploadFile")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
@@ -74,6 +79,16 @@ public class FileController {
 
         fileStorageService.exportFbz(response);
 
+    }
+
+    @GetMapping("/export-pdf")
+    public ResponseEntity exportPdf(HttpServletResponse response) {
+
+        log.info("Export aris");
+
+        pdfService.exportToPdf(response);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private String contentType(HttpServletRequest request, Resource resource){
