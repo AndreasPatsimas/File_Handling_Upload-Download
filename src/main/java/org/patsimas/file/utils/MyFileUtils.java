@@ -4,6 +4,7 @@ import org.patsimas.file.exceptions.FileStorageException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -181,6 +182,29 @@ public class MyFileUtils {
 //                System.out.println("lastAccessTime: " + attr.lastAccessTime());
 //                System.out.println("lastModifiedTime: " + attr.lastModifiedTime());
             }
+        }
+    }
+
+    public static void openFile(String path){
+        try {
+
+            File file = new File(path);
+            if (file.exists()) {
+
+                if (Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop().open(file);
+                } else {
+                    System.out.println("Awt Desktop is not supported!");
+                }
+
+            } else {
+                System.out.println("File is not exists!");
+            }
+
+            System.out.println("Done");
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
