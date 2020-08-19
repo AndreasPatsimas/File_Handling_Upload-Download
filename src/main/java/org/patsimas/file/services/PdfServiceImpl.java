@@ -1,7 +1,7 @@
 package org.patsimas.file.services;
 
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfWriter;
+//import com.itextpdf.text.*;
+//import com.itextpdf.text.pdf.PdfWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
@@ -37,15 +37,15 @@ public class PdfServiceImpl implements PdfService {
 
         try{
 
-            Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("aris.pdf"));
-
-            document.open();
-            Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-            Chunk chunk = new Chunk("Aris Forever!!!", font);
-
-            document.add(chunk);
-            document.close();
+//            Document document = new Document();
+//            PdfWriter.getInstance(document, new FileOutputStream("aris.pdf"));
+//
+//            document.open();
+//            Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
+//            Chunk chunk = new Chunk("Aris Forever!!!", font);
+//
+//            document.add(chunk);
+//            document.close();
         }
         catch (Exception e){
             e.printStackTrace();
