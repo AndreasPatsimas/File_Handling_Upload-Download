@@ -22,7 +22,7 @@ public class PdfHandle {
 
 
     public static void main(String [] args) throws Exception {
-
+        
     }
 
     private static void urlToPdf(String url, String token){
@@ -31,7 +31,8 @@ public class PdfHandle {
 
             URL pageUrl = new URL(url);
             URLConnection urlConnection = pageUrl.openConnection();
-
+            //https://stackoverflow.com/questions/21076179/pkix-path-building-failed-and-unable-to-find-valid-certification-path-to-requ
+            //keytool -import -keystore "C:\Program Files\Java\jdk1.8.0_211\jre\lib\security\cacerts" -file solae.cer
             if (!ObjectUtils.isEmpty(token))
                 urlConnection.addRequestProperty("Authorization", "Bearer " + token);
 
