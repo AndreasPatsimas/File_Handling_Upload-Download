@@ -22,7 +22,7 @@ public class PdfHandle {
 
 
     public static void main(String [] args) throws Exception {
-        
+
     }
 
     private static void urlToPdf(String url, String token){
