@@ -141,6 +141,14 @@
 
 		<!-- pdf -->
 
+		<dependency>
+			<groupId>com.docmosis</groupId>
+			<artifactId>docmosis</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/docmosis4.6.0.jar</systemPath>
+		</dependency>
+
 	</dependencies>
 
 	<build>
