@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
+@RequestMapping(value = "/aws")
 @RestController
 @Slf4j
 public class AwsController {
@@ -22,7 +23,7 @@ public class AwsController {
     @Autowired
     AwsService awsService;
 
-    @PostMapping("/aws/uploadFile")
+    @PostMapping("/uploadFile")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
 
         log.info("Upload file {}", file.getOriginalFilename());
@@ -30,7 +31,7 @@ public class AwsController {
         return awsService.uploadFile(file);
     }
 
-    @PostMapping("/aws/uploadMultipleFiles")
+    @PostMapping("/uploadMultipleFiles")
     public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
 
         log.info("Upload {} files", files.length);
@@ -38,7 +39,7 @@ public class AwsController {
         return awsService.uploadMultipleFiles(files);
     }
 
-    @GetMapping("/aws/downloadFile/{fileName:.+}")
+    @GetMapping("/downloadFile/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName,
                                                  HttpServletRequest request) throws IOException {
 
