@@ -31,6 +31,7 @@ public class FileControllerTest extends BasicWiremockTest {
 
     private static final String UPLOAD_FILE_NAME_1 = "Eniaio.pdf";
 
+    @Ignore
     @Test
     public void downloadFile() throws Exception {
 
