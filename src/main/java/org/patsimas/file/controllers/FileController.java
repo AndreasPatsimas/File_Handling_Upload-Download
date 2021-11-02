@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.List;
 
 @CrossOrigin("*")
+@RequestMapping(value = "/file-handle")
 @RestController
 @Slf4j
 public class FileController {
