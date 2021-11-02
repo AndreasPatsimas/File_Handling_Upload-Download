@@ -14,8 +14,8 @@ public class MassiveWrite {
 
         //massiveWriteColumns(700, "C:/Directory1/entities.txt");
         //massiveWriteConverters(700, "C:/Directory1/converters.txt");
-        //massiveWriteDtos(700, "C:/Directory1/dtos.txt");
-        massiveWriteTestBuilders(700, "C:/Directory1/test_builders.txt");
+        massiveWriteDtos(100, "C:/Directory1/dtos.txt");
+//        massiveWriteTestBuilders(700, "C:/Directory1/test_builders.txt");
     }
 
     private static void massiveWriteColumns(int lines, String path){
