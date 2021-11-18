@@ -17,14 +17,14 @@ import java.net.URLConnection;
 public class PdfHandle {
 
     private static final String BASE_PATH = "C:/data/";
-    private static final String SRC = "C:/data/Φ.Ε. 205.1 - Κατανόηση της Οντότητας και του Περιβάλλοντός της.pdf";
-    private static final String DEST = "C:/data/Φ.Ε. 205.1 - Κατανόηση της Οντότητας και του Περιβάλλοντός της - modified.pdf";
+    private static final String SRC = "C:/data/Επιστολή ΕΙΣΠΡΑΚΤΕΟΥ ποσού.doc";
+    private static final String DEST = "C:/data/Επιστολή ΕΙΣΠΡΑΚΤΕΟΥ ποσού - modified.doc";
 
 
     public static void main(String [] args) throws Exception {
         File file = new File(SRC);
         System.out.println(file.getAbsolutePath());
-        editPdfText("Γενικές πληροφορίες", "agathi");
+        editPdfText("tot", "agathi");
     }
 
     private static void urlToPdf(String url, String token){
