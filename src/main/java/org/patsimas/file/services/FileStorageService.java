@@ -20,4 +20,6 @@ public interface FileStorageService {
     Resource export();
 
     void exportFbz(HttpServletResponse response);
+
+    void downloadZipFile(HttpServletResponse response);
 }

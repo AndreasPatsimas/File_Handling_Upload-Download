@@ -60,6 +60,16 @@ public class FileController {
                 .body(resource);
     }
 
+    @GetMapping("/download-zip")
+    public ResponseEntity<Resource> downloadZipFile(HttpServletResponse response) {
+
+        log.info("Download zip file process end.");
+
+        fileStorageService.downloadZipFile(response);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping("/export")
     public ResponseEntity<Resource> export(HttpServletRequest request) {
 

@@ -9,10 +9,12 @@ import org.patsimas.file.exceptions.FileStorageException;
 import org.patsimas.file.exceptions.MyFileNotFoundException;
 import org.patsimas.file.properties.FileStorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -27,7 +29,11 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 @Slf4j
@@ -159,6 +165,41 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
 
         file.delete();
+    }
+
+    @Override
+    public void downloadZipFile(HttpServletResponse response) {
+
+        log.info("Download zip file process begins.");
+
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment;filename=download.zip");
+        response.setStatus(HttpServletResponse.SC_OK);
+
+        List<String> fileNames = Stream.of("C:/data/output.docx", "C:/data/output1.docx").collect(Collectors.toList());
+
+        System.out.println("############# file size ###########" + fileNames.size());
+
+        try (ZipOutputStream zippedOut = new ZipOutputStream(response.getOutputStream())) {
+            for (String file : fileNames) {
+                FileSystemResource resource = new FileSystemResource(file);
+
+                ZipEntry e = new ZipEntry(Objects.requireNonNull(resource.getFilename()));
+                // Configure the zip entry, the properties of the file
+                e.setSize(resource.contentLength());
+                e.setTime(System.currentTimeMillis());
+                // etc.
+                zippedOut.putNextEntry(e);
+                // And the content of the resource:
+                StreamUtils.copy(resource.getInputStream(), zippedOut);
+                zippedOut.closeEntry();
+            }
+            zippedOut.finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        log.info("Download zip file process end.");
     }
 
     private void setFileToResponse(File file, HttpServletResponse response) throws IOException {

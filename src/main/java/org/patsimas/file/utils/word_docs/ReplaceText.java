@@ -16,9 +16,12 @@ public class ReplaceText {
             if (runs != null) {
                 for (XWPFRun r : runs) {
                     String text = r.getText(0);
-                    System.out.println(text);
                     if (text != null && text.contains("customerName")) {
                         text = text.replace("customerName", "ΠΑΕ ΑΡΗΣ");
+                        r.setText(text, 0);
+                    }
+                    if (text != null && text.contains("date")) {
+                        text = text.replace("date", "19/11/2021");
                         r.setText(text, 0);
                     }
                 }
@@ -39,6 +42,6 @@ public class ReplaceText {
 //                }
 //            }
 //        }
-        doc.write(new FileOutputStream("C:/data/output.docx"));
+        doc.write(new FileOutputStream("C:/data/output1.docx"));
     }
 }
