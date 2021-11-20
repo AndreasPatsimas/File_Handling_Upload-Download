@@ -4,6 +4,7 @@ import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.FileOutputStream;
+import java.time.LocalDate;
 import java.util.List;
 
 public class ReplaceText {
@@ -16,32 +17,57 @@ public class ReplaceText {
             if (runs != null) {
                 for (XWPFRun r : runs) {
                     String text = r.getText(0);
-                    if (text != null && text.contains("customerName")) {
-                        text = text.replace("customerName", "ΠΑΕ ΑΡΗΣ");
+                    if (text != null && text.contains("cn")) {
+                        text = text.replace("cn", "ΠΑΕ ΑΡΗΣ");
                         r.setText(text, 0);
                     }
-                    if (text != null && text.contains("date")) {
-                        text = text.replace("date", "19/11/2021");
+                    if (text != null && text.contains("today")) {
+                        text = text.replace("today", LocalDate.now().toString());
+                        r.setText(text, 0);
+                    }
+
+                    if (text != null && text.contains("basicInfoEndDate")) {
+                        text = text.replace("basicInfoEndDate", LocalDate.now().toString());
+                        r.setText(text, 0);
+                    }
+
+                    if (text != null && text.contains("signer")) {
+                        text = text.replace("signer", "Patsiman");
+                        r.setText(text, 0);
+                    }
+
+                    if (text != null && text.contains("email")) {
+                        text = text.replace("email", "apatsimas@solcrowe.gr");
+                        r.setText(text, 0);
+                    }
+
+                    if (text != null && text.contains("orderCustomerName")) {
+                        text = text.replace("orderCustomerName", "NAOS");
                         r.setText(text, 0);
                     }
                 }
             }
         }
-//        for (XWPFTable tbl : doc.getTables()) {
-//            for (XWPFTableRow row : tbl.getRows()) {
-//                for (XWPFTableCell cell : row.getTableCells()) {
-//                    for (XWPFParagraph p : cell.getParagraphs()) {
-//                        for (XWPFRun r : p.getRuns()) {
-//                            String text = r.getText(0);
-//                            if (text != null && text.contains("needle")) {
-//                                text = text.replace("needle", "haystack");
-//                                r.setText(text,0);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-        doc.write(new FileOutputStream("C:/data/output1.docx"));
+        for (XWPFTable tbl : doc.getTables()) {
+            for (XWPFTableRow row : tbl.getRows()) {
+                for (XWPFTableCell cell : row.getTableCells()) {
+                    for (XWPFParagraph p : cell.getParagraphs()) {
+                        for (XWPFRun r : p.getRuns()) {
+                            String text = r.getText(0);
+                            if (text != null && text.contains("balanceAmount")) {
+                                text = text.replace("balanceAmount", "2000");
+                                r.setText(text, 0);
+                            }
+
+                            if (text != null && text.contains("balanceSecurities")) {
+                                text = text.replace("balanceSecurities", "1000");
+                                r.setText(text, 0);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        doc.write(new FileOutputStream("C:/data/output.docx"));
     }
 }
