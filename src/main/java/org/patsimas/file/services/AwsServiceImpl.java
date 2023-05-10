@@ -1,9 +1,6 @@
 package org.patsimas.file.services;
 
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.patsimas.file.clients.AwsClient;
@@ -74,7 +71,7 @@ public class AwsServiceImpl implements AwsService {
                 .toUriString();
 
         awsClient.s3Client().putObject(new PutObjectRequest(
-                bucketName, file.getOriginalFilename(), file.getInputStream(), new ObjectMetadata()));
+                bucketName, file.getOriginalFilename(), file.getInputStream(), new ObjectMetadata()).withCannedAcl(CannedAccessControlList.PublicRead));
 
         log.info("Upload file to AWS server process completed");
 
